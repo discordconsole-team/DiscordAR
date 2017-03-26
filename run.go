@@ -77,6 +77,7 @@ func message(session *discordgo.Session, e *discordgo.Message){
 	}
 	TIMEOUT.SetTimeout(e.Author.ID, time.Duration(DELAY_PASSIVE) * time.Second);
 
+	rules:
 	for _, rule := range rules{
 		content := strings.ToLower(strings.TrimSpace(e.Content));
 		if(rule.Exact && content != rule.Msg){
@@ -88,7 +89,7 @@ func message(session *discordgo.Session, e *discordgo.Message){
 		if(len(rule.NotFrom) > 0){
 			for _, from := range rule.NotFrom{
 				if(from == e.Author.ID){
-					continue;
+					continue rules;
 				}
 			}
 		}
@@ -100,7 +101,7 @@ func message(session *discordgo.Session, e *discordgo.Message){
 				}
 			}
 
-			if(found){
+			if(!found){
 				continue;
 			}
 		}
