@@ -4,12 +4,17 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/legolord208/stdutil"
+	"github.com/legolord208/timeouts"
 	"os"
 	"os/signal"
 	"strings"
+	"time"
 )
 
 var ownID string;
+var TIMEOUT timeouts.Timeout;
+const DELAY_PASSIVE = 3;
+const DELAY_AGRESSIVE = 5;
 
 func doRun(args []string){
 	if(len(args) < 1){
@@ -19,6 +24,7 @@ func doRun(args []string){
 	token := args[0];
 
 	loadRules();
+	TIMEOUT = timeouts.NewTimeout();
 	fmt.Println("Starting...");
 
 	session, err := discordgo.New(token);
@@ -64,6 +70,13 @@ func messageUpdate(session *discordgo.Session, e *discordgo.MessageUpdate){
 func message(session *discordgo.Session, e *discordgo.Message){
 	if(e.Author == nil){ return; }
 	if(e.Author.ID == ownID){ return; }
+
+	fmt.Println("message")
+	if(TIMEOUT.InTimeout(e.Author.ID)){
+		TIMEOUT.SetTimeout(e.Author.ID, time.Duration(DELAY_AGRESSIVE) * time.Second);
+		return;
+	}
+	TIMEOUT.SetTimeout(e.Author.ID, time.Duration(DELAY_PASSIVE) * time.Second);
 
 	for _, rule := range rules{
 		content := strings.ToLower(strings.TrimSpace(e.Content));
