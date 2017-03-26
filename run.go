@@ -71,7 +71,6 @@ func message(session *discordgo.Session, e *discordgo.Message){
 	if(e.Author == nil){ return; }
 	if(e.Author.ID == ownID){ return; }
 
-	fmt.Println("message")
 	if(TIMEOUT.InTimeout(e.Author.ID)){
 		TIMEOUT.SetTimeout(e.Author.ID, time.Duration(DELAY_AGRESSIVE) * time.Second);
 		return;
