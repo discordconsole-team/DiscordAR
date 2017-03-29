@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -50,14 +51,12 @@ func doRun(args []string){
 
 	fmt.Println("Started!");
 
-	c := make(chan os.Signal, 1);
-	signal.Notify(c, os.Interrupt);
+	c := make(chan os.Signal, 2);
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM);
 
-	for _ = range c{
-		fmt.Println("Closing!");
-		session.Close();
-		return;
-	}
+	<-c;
+	fmt.Println("\nClosing!");
+	session.Close();
 }
 
 func messageCreate(session *discordgo.Session, e *discordgo.MessageCreate){
