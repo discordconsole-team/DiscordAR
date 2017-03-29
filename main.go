@@ -76,12 +76,12 @@ func saveRules() bool{
 func main(){
 	args := os.Args[1:];
 
-	stdutil.EventPrePrintError = append(stdutil.EventPrePrintError, func(err string) bool{
+	stdutil.EventPrePrintError = append(stdutil.EventPrePrintError, func(full string, msg string, err error) bool{
 		color.Unset();
 		COLOR_ERROR.Set();
 		return false;
 	});
-	stdutil.EventPostPrintError = append(stdutil.EventPostPrintError, func(err string){
+	stdutil.EventPostPrintError = append(stdutil.EventPostPrintError, func(full string, msg string, err error){
 		color.Unset();
 	});
 
