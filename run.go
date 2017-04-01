@@ -81,20 +81,38 @@ func message(session *discordgo.Session, e *discordgo.Message) {
 	}
 	TIMEOUT.SetTimeout(e.Author.ID, time.Duration(DELAY_PASSIVE)*time.Second)
 
+	content := strings.ToLower(strings.TrimSpace(e.Content))
 rules:
 	for _, rule := range rules {
-		content := strings.ToLower(strings.TrimSpace(e.Content))
 		if rule.Exact && content != rule.Msg {
 			continue
 		} else if !rule.Exact && !strings.Contains(content, rule.Msg) {
 			continue
 		}
 
-		if len(rule.NotFrom) > 0 {
-			for _, from := range rule.NotFrom {
-				if from == e.Author.ID {
-					continue rules
+		// Channel checking
+		for _, c := range rule.NotInChannel {
+			if c == e.ChannelID {
+				continue rules
+			}
+		}
+		if len(rule.InChannel) > 0 {
+			found := false
+			for _, c := range rule.InChannel {
+				if c == e.ChannelID {
+					found = true
 				}
+			}
+
+			if !found {
+				continue
+			}
+		}
+
+		// User checking
+		for _, from := range rule.NotFrom {
+			if from == e.Author.ID {
+				continue rules
 			}
 		}
 		if len(rule.From) > 0 {

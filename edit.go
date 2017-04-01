@@ -80,6 +80,8 @@ func doEdit() {
 				fmt.Println("\tReply: " + rule.Reply)
 				fmt.Println("\tOnly from filter: " + strings.Join(rule.From, ", "))
 				fmt.Println("\tNot from filter: " + strings.Join(rule.NotFrom, ", "))
+				fmt.Println("\tOnly in channel filter: " + strings.Join(rule.InChannel, ", "))
+				fmt.Println("\tNot in channel filter: " + strings.Join(rule.NotInChannel, ", "))
 			}
 		case "edit":
 			fmt.Println("Select a rule.")
@@ -117,8 +119,10 @@ func doEdit() {
 				fmt.Println("3. Reply")
 				fmt.Println("4. Only from filter")
 				fmt.Println("5. Not from filter")
-				fmt.Println("6. Cancel")
-				fmt.Println("7. DELETE!")
+				fmt.Println("6. Only in channel filter")
+				fmt.Println("7. Not in channel filter")
+				fmt.Println("8. Cancel")
+				fmt.Println("9. DELETE!")
 
 				fmt.Println()
 				READLINE.SetPrompt(COLOR_BACK.Sprint("Property:"))
@@ -139,8 +143,12 @@ func doEdit() {
 				case "5":
 					arrEdit(&rule.NotFrom, READLINE, COLOR_BACK)
 				case "6":
-					break property_loop
+					arrEdit(&rule.InChannel, READLINE, COLOR_BACK)
 				case "7":
+					arrEdit(&rule.NotInChannel, READLINE, COLOR_BACK)
+				case "8":
+					break property_loop
+				case "9":
 					rules = append(rules[:ruleNr], rules[ruleNr+1:]...)
 					deleted = true
 					break property_loop
@@ -182,7 +190,12 @@ func rlWrapperRaw(line string, err error) string {
 }
 
 func arrEdit(arr *[]string, READLINE *readline.Instance, COLOR_BACK *color.Color) {
-	fmt.Println("Now, write user IDs like this:")
+	fmt.Println("Existing:")
+	for _, item := range *arr {
+		fmt.Println("\t" + item)
+	}
+	fmt.Println()
+	fmt.Println("Now, write IDs like this:")
 	fmt.Println("+ID to add.")
 	fmt.Println("-ID to remove.")
 	fmt.Println("Example: +123454321")

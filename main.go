@@ -15,11 +15,13 @@ var COLOR_ERROR = color.New(color.FgRed, color.Bold)
 const RULES_FILE = ".ar_rules"
 
 type Rule struct {
-	Msg     string
-	Exact   bool
-	Reply   string
-	From    []string
-	NotFrom []string
+	Msg          string
+	Exact        bool
+	Reply        string
+	From         []string
+	NotFrom      []string
+	InChannel    []string
+	NotInChannel []string
 }
 
 var rules = make([]Rule, 0)
@@ -27,7 +29,7 @@ var rules = make([]Rule, 0)
 func loadRules() {
 	content, err := ioutil.ReadFile(RULES_FILE)
 	if err != nil {
-		if os.IsNotExist(err) {
+		if !os.IsNotExist(err) {
 			stdutil.PrintErr("Couldn't read rules file", err)
 		}
 	} else {
