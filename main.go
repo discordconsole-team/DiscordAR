@@ -6,6 +6,7 @@ import (
 	"github.com/legolord208/stdutil"
 	"io/ioutil"
 	"os"
+	"runtime"
 	"strings"
 	"unicode"
 )
@@ -100,5 +101,5 @@ func main() {
 }
 
 func exit() {
-	os.Exit(0)
+	runtime.Goexit()
 }
