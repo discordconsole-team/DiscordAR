@@ -2,20 +2,21 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/fatih/color"
-	"github.com/legolord208/stdutil"
 	"io/ioutil"
 	"os"
 	"runtime"
 	"strings"
 	"unicode"
+
+	"github.com/fatih/color"
+	"github.com/legolord208/stdutil"
 )
 
-var COLOR_ERROR = color.New(color.FgRed, color.Bold)
+var colorError = color.New(color.FgRed, color.Bold)
 
-const RULES_FILE = ".ar_rules"
+const rulesFile = ".ar_rules"
 
-type Rule struct {
+type rule struct {
 	Msg          string
 	Exact        bool
 	Reply        string
@@ -25,10 +26,10 @@ type Rule struct {
 	NotInChannel []string
 }
 
-var rules = make([]Rule, 0)
+var rules = make([]rule, 0)
 
 func loadRules() {
-	content, err := ioutil.ReadFile(RULES_FILE)
+	content, err := ioutil.ReadFile(rulesFile)
 	if err != nil {
 		if !os.IsNotExist(err) {
 			stdutil.PrintErr("Couldn't read rules file", err)
@@ -69,7 +70,7 @@ func saveRules() bool {
 	if err != nil {
 		stdutil.PrintErr("Couldn't generate rules file", err)
 	} else {
-		err = ioutil.WriteFile(RULES_FILE, content, 0666)
+		err = ioutil.WriteFile(rulesFile, content, 0666)
 		if err != nil {
 			stdutil.PrintErr("Couldn't write rules file", err)
 		} else {
@@ -84,7 +85,7 @@ func main() {
 
 	stdutil.EventPrePrintError = append(stdutil.EventPrePrintError, func(full string, msg string, err error) bool {
 		color.Unset()
-		COLOR_ERROR.Set()
+		colorError.Set()
 		return false
 	})
 	stdutil.EventPostPrintError = append(stdutil.EventPostPrintError, func(full string, msg string, err error) {

@@ -2,21 +2,22 @@ package main
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
-	"github.com/legolord208/stdutil"
-	"github.com/legolord208/timeouts"
 	"os"
 	"os/signal"
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/bwmarrin/discordgo"
+	"github.com/legolord208/stdutil"
+	"github.com/legolord208/timeouts"
 )
 
 var ownID string
-var TIMEOUT timeouts.Timeout
+var timeout timeouts.Timeout
 
-const DELAY_PASSIVE = 3
-const DELAY_AGRESSIVE = 5
+const delayPassive = 3
+const delayAgressive = 5
 
 func doRun(args []string) {
 	if len(args) < 1 {
@@ -26,7 +27,7 @@ func doRun(args []string) {
 	token := args[0]
 
 	loadRules()
-	TIMEOUT = timeouts.NewTimeout()
+	timeout = timeouts.NewTimeout()
 	fmt.Println("Starting...")
 
 	session, err := discordgo.New(token)
@@ -75,11 +76,11 @@ func message(session *discordgo.Session, e *discordgo.Message) {
 		return
 	}
 
-	if TIMEOUT.InTimeout(e.Author.ID) {
-		TIMEOUT.SetTimeout(e.Author.ID, time.Duration(DELAY_AGRESSIVE)*time.Second)
+	if timeout.InTimeout(e.Author.ID) {
+		timeout.SetTimeout(e.Author.ID, time.Duration(delayAgressive)*time.Second)
 		return
 	}
-	TIMEOUT.SetTimeout(e.Author.ID, time.Duration(DELAY_PASSIVE)*time.Second)
+	timeout.SetTimeout(e.Author.ID, time.Duration(delayPassive)*time.Second)
 
 	content := strings.ToLower(strings.TrimSpace(e.Content))
 rules:

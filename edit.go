@@ -2,26 +2,27 @@ package main
 
 import (
 	"fmt"
-	"github.com/chzyer/readline"
-	"github.com/fatih/color"
-	"github.com/legolord208/stdutil"
 	"io"
 	"strconv"
 	"strings"
+
+	"github.com/chzyer/readline"
+	"github.com/fatih/color"
+	"github.com/legolord208/stdutil"
 )
 
 func doEdit() {
 	loadRules()
 
-	COLOR_BACK := color.New(color.BgBlack, color.FgWhite)
+	colorBack := color.New(color.BgBlack, color.FgWhite)
 	READLINE, err := readline.New("")
 	if err != nil {
 		stdutil.PrintErr("Could not init readline library.", nil)
 		return
 	}
 
-	COLOR_BACK.Println("Edit mode.")
-	COLOR_BACK.Println("To start normal mode, do 'DiscordAR run <token>'")
+	colorBack.Println("Edit mode.")
+	colorBack.Println("To start normal mode, do 'DiscordAR run <token>'")
 	fmt.Println()
 	fmt.Println("Get started! Create rule with 'new'. List rules with 'rules'. Edit rules with 'edit'")
 
@@ -38,14 +39,14 @@ func doEdit() {
 		case "new":
 			fmt.Println()
 			fmt.Println("What will somebody type to trigger this reply?")
-			READLINE.SetPrompt(COLOR_BACK.Sprint("Message:"))
+			READLINE.SetPrompt(colorBack.Sprint("Message:"))
 			msg := rlWrapper(READLINE.Readline())
 
 			fmt.Println()
 			fmt.Println("Will this be exact? (say 'true' or 'false')")
 			var exact bool
 			for {
-				READLINE.SetPrompt(COLOR_BACK.Sprint("Exact:"))
+				READLINE.SetPrompt(colorBack.Sprint("Exact:"))
 				exactStr := rlWrapper(READLINE.Readline())
 
 				if exactStr == "true" {
@@ -61,10 +62,10 @@ func doEdit() {
 
 			fmt.Println()
 			fmt.Println("What is the reply?")
-			READLINE.SetPrompt(COLOR_BACK.Sprint("Reply:"))
+			READLINE.SetPrompt(colorBack.Sprint("Reply:"))
 			reply := rlWrapperRaw(READLINE.Readline())
 
-			rules = append(rules, Rule{
+			rules = append(rules, rule{
 				Msg:   msg,
 				Exact: exact,
 				Reply: reply,
@@ -91,7 +92,7 @@ func doEdit() {
 			}
 
 			fmt.Println()
-			READLINE.SetPrompt(COLOR_BACK.Sprint("Rule:"))
+			READLINE.SetPrompt(colorBack.Sprint("Rule:"))
 			ruleStr := rlWrapper(READLINE.Readline())
 
 			ruleNr, err := strconv.Atoi(ruleStr)
@@ -125,27 +126,27 @@ func doEdit() {
 				fmt.Println("9. DELETE!")
 
 				fmt.Println()
-				READLINE.SetPrompt(COLOR_BACK.Sprint("Property:"))
+				READLINE.SetPrompt(colorBack.Sprint("Property:"))
 				prop := rlWrapper(READLINE.Readline())
 
 				switch prop {
 				case "1":
-					READLINE.SetPrompt(COLOR_BACK.Sprint("Message:"))
+					READLINE.SetPrompt(colorBack.Sprint("Message:"))
 					rule.Msg = rlWrapper(READLINE.Readline())
 				case "2":
 					rule.Exact = !rule.Exact
 					fmt.Println("Exact toggled. Now: " + strconv.FormatBool(rule.Exact))
 				case "3":
-					READLINE.SetPrompt(COLOR_BACK.Sprint("Reply:"))
+					READLINE.SetPrompt(colorBack.Sprint("Reply:"))
 					rule.Reply = rlWrapperRaw(READLINE.Readline())
 				case "4":
-					arrEdit(&rule.From, READLINE, COLOR_BACK)
+					arrEdit(&rule.From, READLINE, colorBack)
 				case "5":
-					arrEdit(&rule.NotFrom, READLINE, COLOR_BACK)
+					arrEdit(&rule.NotFrom, READLINE, colorBack)
 				case "6":
-					arrEdit(&rule.InChannel, READLINE, COLOR_BACK)
+					arrEdit(&rule.InChannel, READLINE, colorBack)
 				case "7":
-					arrEdit(&rule.NotInChannel, READLINE, COLOR_BACK)
+					arrEdit(&rule.NotInChannel, READLINE, colorBack)
 				case "8":
 					break property_loop
 				case "9":
@@ -189,7 +190,7 @@ func rlWrapperRaw(line string, err error) string {
 	}
 }
 
-func arrEdit(arr *[]string, READLINE *readline.Instance, COLOR_BACK *color.Color) {
+func arrEdit(arr *[]string, READLINE *readline.Instance, colorBack *color.Color) {
 	fmt.Println("Existing:")
 	for _, item := range *arr {
 		fmt.Println("\t" + item)
@@ -201,7 +202,7 @@ func arrEdit(arr *[]string, READLINE *readline.Instance, COLOR_BACK *color.Color
 	fmt.Println("Example: +123454321")
 
 	fmt.Println()
-	READLINE.SetPrompt(COLOR_BACK.Sprint("ID:"))
+	READLINE.SetPrompt(colorBack.Sprint("ID:"))
 	id := rlWrapper(READLINE.Readline())
 
 	if strings.HasPrefix(id, "+") {
