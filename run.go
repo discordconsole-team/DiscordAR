@@ -30,6 +30,12 @@ func doRun(args []string) {
 	timeout = timeouts.NewTimeout()
 	fmt.Println("Starting...")
 
+	if !strings.HasPrefix(token, "Bot ") {
+		stdutil.PrintErr("Selfbots are against the T.O.S. and will get you banned.", nil)
+		stdutil.PrintErr("If this is a bot token, prefix it with `Bot `.", nil)
+		return
+	}
+
 	session, err := discordgo.New(token)
 	if err != nil {
 		stdutil.PrintErr("Couldn't initialize bot", err)
